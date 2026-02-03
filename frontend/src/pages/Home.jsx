@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 const Home = () => {
     const [events, setEvents] = useState([]);
+    const [filteredEvents, setFilteredEvents] = useState([]); // Add state for filtering
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -80,9 +81,16 @@ const Home = () => {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="mb-10 text-center">
                     <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Discover What's On in Sydney</h2>
-                    <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+                    <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-6">
                         Curated events from top sources. Updated automatically every day.
                     </p>
+                    <input
+                        type="text"
+                        placeholder="Search events or venues..."
+                        value={search}
+                        onChange={handleSearch}
+                        className="w-full max-w-md px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                    />
                 </div>
 
                 {loading ? (
@@ -93,7 +101,7 @@ const Home = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {events.map(event => (
+                        {filteredEvents.map(event => (
                             <EventCard key={event._id} event={event} onGetTickets={handleGetTickets} />
                         ))}
                     </div>
