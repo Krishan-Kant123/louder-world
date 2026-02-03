@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import EventCard from '../components/EventCard';
 import { motion } from 'framer-motion';
 
@@ -10,20 +10,31 @@ const Home = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [email, setEmail] = useState('');
     const [consent, setConsent] = useState(false);
+    const [search, setSearch] = useState(''); // New state for search query
 
     useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const res = await api.get('/events');
+                setEvents(res.data);
+                setFilteredEvents(res.data); // Initialize filtered events
+                setLoading(false);
+            } catch (err) {
+                console.error("Error fetching events", err);
+                setLoading(false);
+            }
+        };
         fetchEvents();
     }, []);
 
-    const fetchEvents = async () => {
-        try {
-            const res = await axios.get('http://localhost:5000/api/events');
-            setEvents(res.data);
-            setLoading(false);
-        } catch (err) {
-            console.error(err);
-            setLoading(false);
-        }
+    const handleSearch = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearch(query);
+        const filtered = events.filter(ev =>
+            ev.title.toLowerCase().includes(query) ||
+            ev.venue.name.toLowerCase().includes(query)
+        );
+        setFilteredEvents(filtered);
     };
 
     const handleGetTickets = (event) => {
@@ -36,7 +47,7 @@ const Home = () => {
         if (!email || !consent) return alert('Please provide email and consent.');
 
         try {
-            await axios.post('http://localhost:5000/api/leads', {
+            await api.post('/leads', {
                 email,
                 eventId: selectedEvent._id,
                 consent

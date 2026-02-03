@@ -23,15 +23,18 @@ const Dashboard = () => {
     };
 
     const handleImport = async (id) => {
-        // Optimistic update
-        const updatedEvents = events.map(e =>
-            e._id === id ? { ...e, status: 'imported' } : e
-        );
-        setEvents(updatedEvents);
+        try {
+            await api.post(`/events/${id}/import`);
 
-        // In real app, call API to update status
-        // await api.post(`/admin/events/${id}/import`);
-        alert(`Event ${id} imported! (Mock action)`);
+            // Optimistic update
+            const updatedEvents = events.map(e =>
+                e._id === id ? { ...e, status: 'imported' } : e
+            );
+            setEvents(updatedEvents);
+        } catch (err) {
+            console.error(err);
+            alert('Error importing event');
+        }
     };
 
     const getStatusColor = (status) => {

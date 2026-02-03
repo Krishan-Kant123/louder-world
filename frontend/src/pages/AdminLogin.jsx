@@ -4,7 +4,7 @@ import { FaGoogle } from 'react-icons/fa';
 const AdminLogin = () => {
     const handleLogin = () => {
         // Redirect to Backend Auth
-        window.location.href = 'http://localhost:5000/auth/google';
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google`;
     };
 
     return (

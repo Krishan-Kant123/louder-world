@@ -48,4 +48,25 @@ router.post('/leads', async (req, res) => {
     }
 });
 
+// @route   POST /api/events/:id/import
+// @desc    Mark event as imported
+// @access  Public (should be Protected in real app)
+router.post('/events/:id/import', async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+        if (!event) {
+            return res.status(404).json({ msg: 'Event not found' });
+        }
+
+        event.status = 'imported';
+        event.importedAt = Date.now();
+        await event.save();
+
+        res.json(event);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;
