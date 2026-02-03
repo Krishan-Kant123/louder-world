@@ -1,0 +1,6 @@
+.env
+.env.example
+node_modules
+debug_eventbrite.html
+debug_eventbrite.png
+debug_scraper.js
